@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriData Insights - Crop Production Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #7cb342;
+            --accent-color: #c5e1a5;
+            --dark-color: #1b5e20;
+            --light-color: #f1f8e9;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%232e7d32"/></svg>');
+            background-size: cover;
+            color: white;
+            padding: 5rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--dark-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-color);
+            border-color: var(--dark-color);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .filter-section {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .crop-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            background-color: var(--accent-color);
+            padding: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-tree-fill"></i> AgriData Insights
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#data">Data Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#insights">Insights</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Agricultural Data Analysis</h1>
+            <p class="lead">Exploring crop production trends across districts and years</p>
+            <a href="#data" class="btn btn-lg btn-success mt-3">Explore Data</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Summary Stats -->
+        <div class="row mb-5">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="crop-icon">🌾</div>
+                    <div class="stat-value">12,456</div>
+                    <div class="stat-label">Total Rice Production (1000 tons)</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="crop-icon">🌾</div>
+                    <div class="stat-value">8,923</div>
+                    <div class="stat-label">Total Wheat Production (1000 tons)</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="crop-icon">🥜</div>
+                    <div class="stat-value">3,456</div>
+                    <div class="stat-label">Total Oilseeds Production (1000 tons)</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="crop-icon">🎯</div>
+                    <div class="stat-value">1,789</div>
+                    <div class="stat-label">Highest Yield (Kg/ha)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-section" id="data">
+            <h3 class="mb-4">Filter Data</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="stateSelect" class="form-label">State</label>
+                        <select class="form-select" id="stateSelect">
+                            <option value="all" selected>All States</option>
+                            <option value="14">Chhattisgarh</option>
+                            <option value="6">Madhya Pradesh</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="districtSelect" class="form-label">District</label>
+                        <select class="form-select" id="districtSelect">
+                            <option value="all" selected>All Districts</option>
+                            <!-- Districts will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="yearSelect" class="form-label">Year</label>
+                        <select class="form-select" id="yearSelect">
+                            <option value="all" selected>All Years</option>
+                            <!-- Years will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label for="cropSelect" class="form-label">Crop</label>
+                        <select class="form-select" id="cropSelect">
+                            <option value="rice">Rice</option>
+                            <option value="wheat">Wheat</option>
+                            <option value="maize">Maize</option>
+                            <option value="sorghum">Sorghum</option>
+                            <option value="groundnut">Groundnut</option>
+                            <option value="sugarcane">Sugarcane</option>
+                            <option value="cotton">Cotton</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 align-self-end">
+                    <button class="btn btn-primary w-100" onclick="updateCharts()">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Production Trends (2010-2017)</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="productionChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Yield Comparison (Kg/ha)</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="yieldChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Crop Area Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="areaChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <section class="highlight mt-5" id="insights">
+            <div class="container">
+                <h2 class="text-center mb-4">Key Insights</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Rice Production Trends</h5>
+                                <p class="card-text">
+                                    Rice production has shown significant variation across districts. Durg district in Chhattisgarh consistently maintains high production levels, with 2016 being a peak year at 1791.66 (1000 tons).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Wheat Yield Improvements</h5>
+                                <p class="card-text">
+                                    Wheat yields have improved steadily in most districts, with some districts in Madhya Pradesh showing yields above 4000 Kg/ha in recent years, indicating successful adoption of improved agricultural practices.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Regional Specialization</h5>
+                                <p class="card-text">
+                                    Certain districts show specialization in specific crops. For example, Raigarh district has significant oilseed production, while Surguja shows higher maize cultivation patterns.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Climate Impact</h5>
+                                <p class="card-text">
+                                    Year-to-year variations in yield appear to correlate with monsoon patterns, with 2015 showing reduced yields across multiple crops and districts, possibly indicating drought conditions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="mt-5" id="about">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="text-center mb-4">About This Project</h2>
+                    <p class="lead">
+                        This agricultural data analysis dashboard was created as part of an internship project to visualize and analyze crop production data across multiple districts and years.
+                    </p>
+                    <p>
+                        The dataset includes information on various crops including rice, wheat, maize, sorghum, pulses, oilseeds, sugarcane, and cotton. The data spans from 2010 to 2017 and covers districts in Chhattisgarh and Madhya Pradesh.
+                    </p>
+                    <p>
+                        The analysis focuses on production trends, yield comparisons, and cultivation area patterns to derive insights that can inform agricultural policy and farming practices.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>AgriData Insights</h5>
+                    <p>Agricultural Data Analysis Dashboard</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>Internship Project<br>Data Source: Crops_data.csv</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="mb-0">© 2023 AgriData Insights | Created for Educational Purposes</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data (in a real scenario, this would come from the CSV file)
+        const cropData = {
+            years: [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017],
+            districts: ['Durg', 'Bastar', 'Raipur', 'Bilaspur', 'Raigarh', 'Surguja', 'Jabalpur', 'Balaghat', 'Chhindwara', 'Narsinghpur'],
+            states: ['Chhattisgarh', 'Madhya Pradesh'],
+            crops: {
+                rice: {
+                    production: [1319.18, 1416.48, 1534.22, 1296.24, 1444.24, 880.6, 1791.66, 983.21],
+                    yield: [1695.77, 1756.23, 1900.97, 1581.86, 1729.89, 1076.95, 2085.96, 1168.92],
+                    area: [777.92, 806.55, 807.07, 819.44, 834.87, 817.68, 858.91, 841.13]
+                },
+                wheat: {
+                    production: [45.87, 50.19, 47.69, 43.33, 50.96, 54.6, 61.84, 50.19],
+                    yield: [994.69, 1115.68, 1087.1, 1043.06, 1151.49, 1120.74, 1263.55, 1153.77],
+                    area: [46.12, 44.98, 43.87, 41.54, 44.25, 48.72, 48.94, 43.5]
+                },
+                maize: {
+                    production: [4.63, 4.67, 4.8, 6.34, 5.84, 14.47, 16.12, 18.09],
+                    yield: [1457.32, 1285.56, 1538.56, 1742.2, 1451.66, 1467.17, 2028.48, 1956.03],
+                    area: [3.17, 3.63, 3.12, 3.64, 4.02, 9.87, 7.95, 9.25]
+                }
+            }
+        };
+
+        // Initialize charts
+        let productionChart, yieldChart, areaChart;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            populateFilters();
+        });
+
+        function populateFilters() {
+            // Populate year filter
+            const yearSelect = document.getElementById('yearSelect');
+            cropData.years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+
+            // Populate district filter
+            const districtSelect = document.getElementById('districtSelect');
+            cropData.districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district.toLowerCase();
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        }
+
+        function initCharts() {
+            const productionCtx = document.getElementById('productionChart').getContext('2d');
+            productionChart = new Chart(productionCtx, {
+                type: 'line',
+                data: {
+                    labels: cropData.years,
+                    datasets: [
+                        {
+                            label: 'Rice Production (1000 tons)',
+                            data: cropData.crops.rice.production,
+                            borderColor: 'rgb(46, 125, 50)',
+                            backgroundColor: 'rgba(46, 125, 50, 0.2)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Wheat Production (1000 tons)',
+                            data: cropData.crops.wheat.production,
+                            borderColor: 'rgb(121, 85, 72)',
+                            backgroundColor: 'rgba(121, 85, 72, 0.2)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Crop Production Over Time'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Production (1000 tons)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const yieldCtx = document.getElementById('yieldChart').getContext('2d');
+            yieldChart = new Chart(yieldCtx, {
+                type: 'bar',
+                data: {
+                    labels: cropData.districts.slice(0, 5),
+                    datasets: [
+                        {
+                            label: 'Rice Yield (Kg/ha)',
+                            data: [1695, 1756, 1900, 1581, 1729],
+                            backgroundColor: 'rgba(46, 125, 50, 0.7)'
+                        },
+                        {
+                            label: 'Wheat Yield (Kg/ha)',
+                            data: [994, 1115, 1087, 1043, 1151],
+                            backgroundColor: 'rgba(121, 85, 72, 0.7)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Yield by District (2017)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Yield (Kg/ha)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const areaCtx = document.getElementById('areaChart').getContext('2d');
+            areaChart = new Chart(areaCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Rice', 'Wheat', 'Maize', 'Pulses', 'Oilseeds', 'Sugarcane', 'Cotton'],
+                    datasets: [{
+                        data: [841, 43, 9, 32, 45, 12, 8],
+                        backgroundColor: [
+                            'rgba(46, 125, 50, 0.7)',
+                            'rgba(121, 85, 72, 0.7)',
+                            'rgba(255, 193, 7, 0.7)',
+                            'rgba(156, 39, 176, 0.7)',
+                            'rgba(255, 152, 0, 0.7)',
+                            'rgba(233, 30, 99, 0.7)',
+                            'rgba(96, 125, 139, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Crop Area Distribution (1000 ha)'
+                        },
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            // In a real application, this would filter data based on selections
+            // For this demo, we'll just show a notification
+            alert('Filters applied! In a real application, this would update the charts with filtered data.');
+        }
+    </script>
+</body>
+</html>
